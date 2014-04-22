@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ShaderLab>
+	<shaders>
+		<vertex>Vertex_00.vert</vertex>
+		<fragment>Fragment_00.frag</fragment>
+	</shaders>
+	<model>
+		<id>0</id>
+	</model>
+	<textures>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_001.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_002.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_003.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_004.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_005.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_006.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_007.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_008.png</filename>
+		<filename>../../../Documents/GitHub/VolumetricVisualization/cthead_4slicesperimage_33slices/cthead_4slicesperimage_33slices/cthead4_009.png</filename>
+	</textures>
+</ShaderLab>
