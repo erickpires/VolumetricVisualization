@@ -63,8 +63,11 @@ float getVoxel(vec3 p){
 }
 bool cerebro(float value)
 {
+
+	//float min = 50.0/256.0;
+  //float max = 90.0/256.0;
   float min = 50.0/256.0;
-  float max = 90.0/256.0;
+  float max = 95.0/256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;
@@ -73,8 +76,8 @@ bool cerebro(float value)
 
 bool osso(float value)
 {
-  float min = 120.0/256.0;
-  float max = 200.0/256.0;
+  float min = 100.0/256.0;
+  float max = 240.0/256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;
@@ -87,7 +90,7 @@ float transferenceAlpha(float value)
    return 0.005;
 	if (osso(value))
 		return 0.003;
-  return 0.001;
+  return 0.0;
 }
 
 vec3 transferenceColor(float value)
@@ -106,16 +109,16 @@ void main (void)
   vec3 p = _enterPoint;
   float delta = 0.001;
 	float opacidade = 0.0;
-	vec4 cor = vec4(0.0);
+	vec3 cor = vec3(0.0);
   while (p.z <= 1.0 && p.x >= 0.0 && p.x <= 1.0 && p.y>=0.0 && p.y<=1.0)
   {
+		
+		cor += transferenceColor(getVoxel(p))*transferenceAlpha(getVoxel(p) *(1-opacidade));
 		opacidade += transferenceAlpha(getVoxel(p))*(1-opacidade);	 
-		cor.rbg += transferenceColor(getVoxel(p)*transferenceAlpha(getVoxel(p)) *(1-opacidade));
-
 			
    		p += delta*camDir;
   }
 
-  gl_FragColor.xyz =cor.xyz;
+  gl_FragColor.rgb =cor.rgb;
   gl_FragColor.a  = opacidade;
 }
