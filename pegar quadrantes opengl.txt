@@ -1,0 +1,153 @@
+quadrantes no sentido horario
+
+        |
+primeiro|segundo
+        |
+-----------------
+        |
+quarto  |terceiro
+        |
+
+
+A imagem fica invertida quando colocada no shaderlabs em relação ao eixo y, fica de cabeça pra baixo.
+Portanto, tem que tomar cuidado, pois o primeiro quadrante na foto original NÃO É IGUAL ao primeiro
+quadrante da foto no shaderlabs.
+ 
+
+    foto original     |     foto no shaderlabs
+-----------------------------------------------
+                     
+primeiro quadrante ------> quarto quadrante
+segundo quadrante  ------> terceiro quadrante
+terceiro quadrante ------> segundo quadrante
+quarto quadrante   ------> primeiro quadrante
+
+
+
+quarto quadrante (em relação a foto original):
+
+coord_texture = coord_texture*0.5 + 0.5;
+coord_texture = coord_texture*0.5;
+
+terceiro quadrante (em relação a foto original):
+
+coord_texture = coord_texture*0.5 + 0.5;
+coord_texture = coord_texture*0.5;
+coord_texture.x = coord_texture.x + 0.5;
+
+segundo quadrante (em relação a foto original):
+
+coord_texture = coord_texture*0.5 + 0.5;
+coord_texture = coord_texture*0.5;
+coord_texture.x = coord_texture.x + 0.5;
+coord_texture.y = coord_texture.y + 0.5;
+
+primeiro qudrante (em relação a foto original):
+
+coord_texture = coord_texture*0.5 + 0.5;
+coord_texture = coord_texture*0.5;
+coord_texture.y = coord_texture.y + 0.5;
+
+
+----------------------------------------------------------------------
+
+
+Código: O código desse extra fica mais ou menos assim, não consigo testar tudo direito pelo problema que está
+dando aqui, mas pelo que eu consegui, acho que está certo.
+Já testei se a função verificaquadrante está certo, está funcionando. Só não consegui testar juntando o getVoxel 
+com a verificaquadrante.
+
+Vertex:
+
+varying vec3 k;
+void main()
+{
+	k = gl_Vertex.xyz;
+	gl_Position = ftransform();
+}
+
+Fragment:
+
+uniform sampler2D sampler2d0;
+varying vec2 k;
+
+//o getVoxel ficaria mais ou menos assim
+
+float getVoxel(vec3 p){
+	float h;
+	if(p.z < 1.0/9.0){
+             p.xy = verificaquadrante(1,p.xy);
+             h = texture2D(sampler2d2, (p.xy)).r;
+}
+	else if(p.z < 2.0/9.0){
+             p.xy = verificaquadrante(1,p.xy);
+	     h = texture2D(sampler2d2, (p.xy)).g;
+}
+	else if(p.z < 3.0/9.0){
+             p.xy = verificaquadrante(1,p.xy);
+	     h = texture2D(sampler2d2, (p.xy)).b;
+}
+	else if(p.z < 4.0/9.0){
+             p.xy = verificaquadrante(1,p.xy);
+             h = texture2D(sampler2d1, (p.xy)).r;
+}
+	else if(p.z < 5.0/9.0){
+             p.xy = verificaquadrante(2,p.xy);
+	     h = texture2D(sampler2d1, (p.xy)).g;
+}
+	else if(p.z < 6.0/9.0){
+             p.xy = verificaquadrante(2,p.xy);
+	     h = texture2D(sampler2d1, (p.xy)).b;
+}
+  else if(p.z < 7.0/9.0){
+             p.xy = verificaquadrante(2,p.xy);
+	     h = texture2D(sampler2d0, (p.xy)).r;
+}
+	else if(p.z < 8.0/9.0){
+             p.xy = verificaquadrante(2,p.xy);
+	     h = texture2D(sampler2d0, (p.xy)).g;
+}
+	else{
+             p.xy = verificaquadrante(3,p.xy);
+	     h = texture2D(sampler2d0, (p.xy)).b;
+}
+
+	return h;
+}
+
+vec2 verificaquadrante (int quadrante,vec2 coord_texture){ 
+
+//quadrantes em relaçao a foto original
+//recebe as coordenadas e ajusta elas pro quadrante que a gente precisa
+	 
+  if(quadrante == 1){
+    coord_texture = coord_texture*0.5 + 0.5;
+    coord_texture = coord_texture*0.5;
+    coord_texture.y = coord_texture.y + 0.5;
+    return coord_texture;
+   }
+  if(quadrante == 2){
+    coord_texture = coord_texture*0.5 + 0.5;
+    coord_texture. = coord_texture*0.5;
+    coord_texture.x = coord_texture.x + 0.5;
+    coord_texture.y = coord_texture.y + 0.5;
+    return coord_texture;
+   }
+  if(quadrante == 3){
+    coord_texture = coord_texture*0.5 + 0.5;
+    coord_texture = coord_texture*0.5;
+    coord_texture.x = coord_texture.x + 0.5;
+    return coord_texture;
+   }
+  if(quadrante == 4){
+    coord_texture = coord_texture*0.5 + 0.5;
+    coord_texture = coord_texture*0.5;
+    return coord_texture;
+   }
+}
+
+e na funçao main
+teria isso quando precisasse.
+
+vec3 p = k;
+getVoxel(p);
