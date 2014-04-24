@@ -1,0 +1,70 @@
+A função recebe o eixo, duas posições de corte (c1 e c2) e a coordenada de textura.
+Faz o primeiro corte em relação a c1  (corta <=) e depois a c2 (corta >=), assim,
+a gente consegue cortar dos dois lados do eixo (uma fatia), como ele pede.Se c1 = 0.0
+só corta a imagem no ponto c2, o inverso vale pra c2 = 1.0.Se chamarmos duas vezes essa função
+com dois eixos diferentes, podemos realizar dois corte em eixos distintos simultaneamente.
+
+void corteperpendicular (int eixo, float c1, float c2, vec3 coord_texture){
+// 1 = eixo x , 2 = eixo y, 3 = eixo z
+   if(eixo == 1){
+     if (coord_texture.x < c1)
+       discard;
+     if (coord_texture.x > c2)
+       discard;
+    }
+   if(eixo == 2){
+     if (coord_texture.y < c1)
+       discard;
+     if (coord_texture.y > c2)
+       discard;
+    }
+   if(eixo == 3){
+     if (coord_texture.z < c1)
+       discard;
+     if (coord_texture.z > c2)
+       discard;
+    }
+}
+
+
+Corte oblíquo.
+Acho que aqui não vamos precisar do ângulo entre o raio e a normal do plano de corte,
+eu fiz desse jeito e acho q deu certo.
+
+void corteobliquo (float a,float b,float c,float d,vec3 p,int lado){
+
+// equacao do plao é ax + by + cz + d = 0 e p sao as coordenadas
+//lado = 0, colocamos no if ">", os pontos acima do plano sao descartados
+//lado = 1, colocamos no if "<", os pontos abaixo do plano sao descartados
+
+if(lado == 0){
+  if(p.x*(a) + p.y*(b) + p.z*(c) + d > 0.)
+     discard;
+    }
+else{
+  if(p.x*(a) + p.y*(b) + p.z*(c) + d < 0.)
+     discard;
+    }
+
+}
+
+Nos testes usei essa chamada pro corte obliquo:
+
+corteobliquo(-0.06,0.09,0.0,0.011,coord_texture,1); //-0.06x + 0.09y + 0.011 = 0
+
+Aqui eu tentei fazer um corte perpendicular com a funçao corteobliquio:
+
+corteobliquo(1.,0.,0.,-0.3,coord_texture,1); // corte no eixo x = 0.3
+corteobliquo(1.,0.,0.,-0.7,coord_texture,1); // corte no eixo x = 0.7
+
+Aqui os teste da funçao corteperpendicular
+
+corteperpendicular(1,0.3,0.7,coord_texture); // corte eixo x = 0.3 e x=0.7 (fatia)
+corteperpendicular(3,0.3,1.,coord_texture);  // corte eixo z = 0.3
+
+Eu testei essas funções usando aquele código do cubo vermelho que voce me passou pelo github.
+Quando eu tento fazer dois cortes em dois eixos diferentes (por exemplo, um corte em x
+e outro em y usando corteperpendicular, ou dois cortes com dois planos diferentes usando
+corteobliquo) o cubo fica vazado (oco). Ainda não sei porque.
+
+
