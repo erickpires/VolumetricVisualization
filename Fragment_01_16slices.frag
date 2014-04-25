@@ -11,6 +11,47 @@ uniform sampler2D sampler2d7;
 uniform sampler2D sampler2d8;  
 
 
+bool corteperpendicular (int eixo, float c1, float c2, vec3 coord_texture){
+// 1 = eixo x , 2 = eixo y, 3 = eixo z
+   if(eixo == 1){
+     if (coord_texture.x < c1)
+       return true;
+     if (coord_texture.x > c2)
+       return true;
+    }
+   if(eixo == 2){
+     if (coord_texture.y < c1)
+       return true;
+     if (coord_texture.y > c2)
+       return true;
+    }
+   if(eixo == 3){
+     if (coord_texture.z < c1)
+       return true;
+     if (coord_texture.z > c2)
+       return true;
+    }
+
+	return false;
+}
+
+bool corteobliquo (float a,float b,float c,float d,vec3 p,int lado){
+
+// equacao do plao é ax + by + cz + d = 0 e p sao as coordenadas
+//lado = 0, colocamos no if ">", os pontos acima do plano sao descartados
+//lado = 1, colocamos no if "<", os pontos abaixo do plano sao descartados
+
+if(lado == 0){
+  if(p.x*(a) + p.y*(b) + p.z*(c) + d > 0.)
+     return true;
+    }
+else{
+  if(p.x*(a) + p.y*(b) + p.z*(c) + d < 0.)
+     return true;
+    }
+	return false;
+}
+
 vec2 verificaQuadrante (int quadrante,vec2 coord_texture){ 
 
 //quadrantes em relaçao a foto original
@@ -121,8 +162,17 @@ bool cerebro(float value)
 
 	//float min = 50.0/256.0;
   //float max = 90.0/256.0;
-  float min = 65.0/256.0;
-  float max = 95.0/256.0;
+  float min = 82.5/256.0;
+  float max = 100.0/256.0;
+  float v = (value-min)/(max-min);
+  if (value>min && value<=max)
+   return true;
+  return false;
+}
+
+bool carne(float value){
+	float min = 65.0/256.0;
+  float max = 81.0/256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;
@@ -139,21 +189,30 @@ bool osso(float value)
   return false;
 }
 
-float transferenceAlpha(float value)
+float transferenceAlpha(float value, vec3 p)
 {
+
+	//if(corteperpendicular(1, 0.2, 0.4, p) || corteperpendicular(3, 0.0, 0.4, p) || corteperpendicular(2, 0.3, 1.0, p))
+	//	return 0.0;
+	if(corteobliquo(-0.16,0.09,0.14,-0.05, p, 1))
+		return 0.0;
+	if(carne(value))
+		return 0.005;
   if (cerebro(value))
-   return 0.005;
+   return 0.006;
 	if (osso(value))
-		return 0.003;
+		return 0.011;
   return 0.0;
 }
 
 vec3 transferenceColor(float value)
 {
+	if(carne(value))
+		return vec3(1.0,0.0,0.0);
 	if (cerebro(value))
-   return vec3(1.0,0.0,0.0);
+   return vec3(0.0,1.0,0.0);
 	if (osso(value))
-		return vec3(0.0,1.0,0.0);
+		return vec3(1.0,1.0,1.0);
   return vec3(1.0,1.0,1.0);
 }
 
@@ -167,9 +226,10 @@ void main (void)
 	vec3 cor = vec3(0.0);
   while (p.z <= 1.0 && p.x >= 0.0 && p.x <= 1.0 && p.y>=0.0 && p.y<=1.0)
   {
-		
-		cor += transferenceColor(getVoxel(p))*transferenceAlpha(getVoxel(p) *(1-opacidade));
-		opacidade += transferenceAlpha(getVoxel(p))*(1-opacidade);	 
+
+		opacidade += transferenceAlpha(getVoxel(p), p)*(1-opacidade);	
+		cor += transferenceColor(getVoxel(p))*transferenceAlpha(getVoxel(p), p)*(1-opacidade);
+		 
 			
    		p += delta*camDir;
   }
