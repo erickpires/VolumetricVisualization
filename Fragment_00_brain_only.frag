@@ -11,7 +11,7 @@ uniform sampler2D sampler2d7;
 uniform sampler2D sampler2d8;  
 
 
-bool cortePerpendicular (int eixo, float c1, float c2, vec3 coord_texture){
+bool corteperpendicular (int eixo, float c1, float c2, vec3 coord_texture){
 // 1 = eixo x , 2 = eixo y, 3 = eixo z
    if(eixo == 1){
      if (coord_texture.x < c1)
@@ -35,7 +35,7 @@ bool cortePerpendicular (int eixo, float c1, float c2, vec3 coord_texture){
 	return false;
 }
 
-bool corteObliquo (float a,float b,float c,float d,vec3 p,int lado){
+bool corteobliquo (float a,float b,float c,float d,vec3 p,int lado){
 
 // equacao do plao é ax + by + cz + d = 0 e p sao as coordenadas
 //lado = 0, colocamos no if ">", os pontos acima do plano sao descartados
@@ -106,27 +106,11 @@ float getVoxel(vec3 p){
 
 bool cerebro(float value)
 {
-  float min = 83.0/256.0;
+
+	//float min = 50.0/256.0;
+  //float max = 90.0/256.0;
+  float min = 84.4/256.0;
   float max = 85.0/256.0;
-  float v = (value-min)/(max-min);
-  if (value>min && value<=max)
-   return true;
-  return false;
-}
-
-bool carne(float value){
-	float min = 65.0/256.0;
-  float max = 81.0/256.0;
-  float v = (value-min)/(max-min);
-  if (value>min && value<=max)
-   return true;
-  return false;
-}
-
-bool osso(float value)
-{
-  float min = 100.0/256.0;
-  float max = 240.0/256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;
@@ -136,27 +120,20 @@ bool osso(float value)
 float transferenceAlpha(float value, vec3 p)
 {
 
-//	if(cortePerpendicular(1, 0.2, 0.4, p) || cortePerpendicular(3, 0.0, 0.4, p) || cortePerpendicular(2, 0.3, 1.0, p))
+	//if(corteperpendicular(1, 0.2, 0.4, p) || corteperpendicular(3, 0.0, 0.4, p) || corteperpendicular(2, 0.3, 1.0, p))
 //		return 0.0;
-//	if(corteObliquo(-0.16,0.09,0.14,-0.05, p, 1))
-//		return 0.0;
-	if(carne(value))
-		return 0.005;
+//	if(corteobliquo(-0.16,0.09,0.14,-0.05, p, 1))
+	//	return 0.0;
   if (cerebro(value))
    return 0.025;
-	if (osso(value))
-		return 0.013;
   return 0.0;
 }
 
 vec3 transferenceColor(float value)
 {
-	if(carne(value))
-		return vec3(1.0,0.0,0.0);
+	
 	if (cerebro(value))
    return vec3(1.0,1.0,0.0);
-	if (osso(value))
-		return vec3(1.0,1.0,1.0);
   return vec3(1.0,1.0,1.0);
 }
 

@@ -11,7 +11,7 @@ uniform sampler2D sampler2d7;
 uniform sampler2D sampler2d8;  
 
 
-bool corteperpendicular (int eixo, float c1, float c2, vec3 coord_texture){
+bool cortePerpendicular (int eixo, float c1, float c2, vec3 coord_texture){
 // 1 = eixo x , 2 = eixo y, 3 = eixo z
    if(eixo == 1){
      if (coord_texture.x < c1)
@@ -35,7 +35,7 @@ bool corteperpendicular (int eixo, float c1, float c2, vec3 coord_texture){
 	return false;
 }
 
-bool corteobliquo (float a,float b,float c,float d,vec3 p,int lado){
+bool corteObliquo (float a,float b,float c,float d,vec3 p,int lado){
 
 // equacao do plao é ax + by + cz + d = 0 e p sao as coordenadas
 //lado = 0, colocamos no if ">", os pontos acima do plano sao descartados
@@ -52,48 +52,42 @@ else{
 	return false;
 }
 
-vec2 verificaQuadrante (int quadrante,vec2 coord_texture){ 
+vec2 modificaCoordenadaParaQuadrante (int quadrante,vec2 coord_texture){ 
 
 //quadrantes em relaçao a foto original
 //recebe as coordenadas e ajusta elas pro quadrante que a gente precisa
 	coord_texture *= 0.5;
 
   if(quadrante == 1){
-    coord_texture.x = coord_texture.x + 0.5;  	
-   }
+     	 coord_texture.y = coord_texture.y + 0.5;
+  }
 
   if(quadrante == 2){
-   
-
-   }
-  if(quadrante == 3){
-    coord_texture.y = coord_texture.y + 0.5;
-   }
+  }
+  if(quadrante == 3){   
+		coord_texture.x = coord_texture.x + 0.5; 
+  }
   if(quadrante == 4){
 		 coord_texture.x = coord_texture.x + 0.5;
     coord_texture.y = coord_texture.y + 0.5;
-   }
+  }
 
 	 return coord_texture;
 }
 
 vec2 chooseImage(sampler2D sampler, vec2 point, float dz){
-	vec2 actual_point;
 	if(dz < 1.0/4.0){
-		actual_point = verificaQuadrante(3, point);
+		return modificaCoordenadaParaQuadrante(1, point);
 	}
-	else if(dz < 2.0/4.0){
-		actual_point = verificaQuadrante(2, point);	
+	if(dz < 2.0/4.0){
+		return modificaCoordenadaParaQuadrante(2, point);	
 	}
-	else if(dz < 3.0/4.0){
-		actual_point = verificaQuadrante(1, point);
-
+	if(dz < 3.0/4.0){
+		return modificaCoordenadaParaQuadrante(3, point);
 	}
 	else{
-		actual_point = verificaQuadrante(4, point);
-		
+		return modificaCoordenadaParaQuadrante(4, point);		
 	}
-	return actual_point;
 }
 
 
@@ -109,19 +103,16 @@ float getVoxelValueFromSampler(sampler2D sampler, vec2 p, float dz){
 		_dz = (dz - 1.0/4.0) * 4.0;
 		point = chooseImage(sampler, p, _dz);
 		return texture2D(sampler, point).g;
-		//return 0.0;
 	}
 	if(dz < 3.0/4.0){
 		_dz = (dz - 2.0/4.0) * 4.0;
 		point = chooseImage(sampler, p, _dz);
 		return texture2D(sampler, point).b;
-		//return 0.0;
 	}
 	else{
 		_dz = (dz - 3.0/4.0) * 4.0;
 		point = chooseImage(sampler, p, _dz);
 		return texture2D(sampler, point).a;
-		//return 0.0;
 	}
 }
 
@@ -155,15 +146,12 @@ float getVoxel(vec3 p){
 		float dz = (p.z - 6.0/7.0) * 7.0;
 		return getVoxelValueFromSampler(sampler2d6, p.xy, dz);
 	}
-	//return getVoxelValueFromSampler(sampler2d3, p, p.z);
 }
+
 bool cerebro(float value)
 {
-
-	//float min = 50.0/256.0;
-  //float max = 90.0/256.0;
   float min = 82.5/256.0;
-  float max = 100.0/256.0;
+  float max = 87./256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;
@@ -192,16 +180,16 @@ bool osso(float value)
 float transferenceAlpha(float value, vec3 p)
 {
 
-	//if(corteperpendicular(1, 0.2, 0.4, p) || corteperpendicular(3, 0.0, 0.4, p) || corteperpendicular(2, 0.3, 1.0, p))
-	//	return 0.0;
-	if(corteobliquo(-0.16,0.09,0.14,-0.05, p, 1))
-		return 0.0;
+//	if(cortePerpendicular(1, 0.2, 0.4, p) || cortePerpendicular(3, 0.0, 0.4, p) || cortePerpendicular(2, 0.3, 1.0, p))
+//		return 0.0;
+//	if(corteObliquo(-0.16,0.09,0.14,-0.05, p, 1))
+//		return 0.0;
 	if(carne(value))
 		return 0.005;
   if (cerebro(value))
-   return 0.006;
+   return 0.019;
 	if (osso(value))
-		return 0.011;
+		return 0.013;
   return 0.0;
 }
 
@@ -210,7 +198,7 @@ vec3 transferenceColor(float value)
 	if(carne(value))
 		return vec3(1.0,0.0,0.0);
 	if (cerebro(value))
-   return vec3(0.0,1.0,0.0);
+   return vec3(1.0,1.0,0.0);
 	if (osso(value))
 		return vec3(1.0,1.0,1.0);
   return vec3(1.0,1.0,1.0);
@@ -226,10 +214,8 @@ void main (void)
 	vec3 cor = vec3(0.0);
   while (p.z <= 1.0 && p.x >= 0.0 && p.x <= 1.0 && p.y>=0.0 && p.y<=1.0)
   {
-
-		opacidade += transferenceAlpha(getVoxel(p), p)*(1-opacidade);	
 		cor += transferenceColor(getVoxel(p))*transferenceAlpha(getVoxel(p), p)*(1-opacidade);
-		 
+		opacidade += transferenceAlpha(getVoxel(p), p)*(1-opacidade);	
 			
    		p += delta*camDir;
   }

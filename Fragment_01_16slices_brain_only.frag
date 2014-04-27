@@ -52,81 +52,106 @@ else{
 	return false;
 }
 
+vec2 modificaCoordenadaParaQuadrante (int quadrante,vec2 coord_texture){ 
 
-float getVoxelValueFromSampler(sampler2D sampler, vec3 p, float dz){
-	if(dz < 1.0/4.0)
-		return texture2D(sampler, (p.xy)).r;
-	if(dz < 2.0/4.0)
-		return texture2D(sampler, (p.xy)).g;
-	if(dz < 3.0/4.0)
-		return texture2D(sampler, (p.xy)).b;
-	else
-		return texture2D(sampler, (p.xy)).a;
+//quadrantes em relaçao a foto original
+//recebe as coordenadas e ajusta elas pro quadrante que a gente precisa
+	coord_texture *= 0.5;
+
+  if(quadrante == 1){
+     	 coord_texture.y = coord_texture.y + 0.5;
+  }
+
+  if(quadrante == 2){
+  }
+  if(quadrante == 3){   
+		coord_texture.x = coord_texture.x + 0.5; 
+  }
+  if(quadrante == 4){
+		 coord_texture.x = coord_texture.x + 0.5;
+    coord_texture.y = coord_texture.y + 0.5;
+  }
+
+	 return coord_texture;
+}
+
+vec2 chooseImage(sampler2D sampler, vec2 point, float dz){
+	if(dz < 1.0/4.0){
+		return modificaCoordenadaParaQuadrante(1, point);
+	}
+	if(dz < 2.0/4.0){
+		return modificaCoordenadaParaQuadrante(2, point);	
+	}
+	if(dz < 3.0/4.0){
+		return modificaCoordenadaParaQuadrante(3, point);
+	}
+	else{
+		return modificaCoordenadaParaQuadrante(4, point);		
+	}
+}
+
+
+float getVoxelValueFromSampler(sampler2D sampler, vec2 p, float dz){
+	float _dz;
+	vec2 point;
+	if(dz < 1.0/4.0){
+		_dz = (dz - 0.0/4.0) * 4.0;	
+		point = chooseImage(sampler, p, _dz);
+		return texture2D(sampler, point).r;
+	}
+	if(dz < 2.0/4.0){
+		_dz = (dz - 1.0/4.0) * 4.0;
+		point = chooseImage(sampler, p, _dz);
+		return texture2D(sampler, point).g;
+	}
+	if(dz < 3.0/4.0){
+		_dz = (dz - 2.0/4.0) * 4.0;
+		point = chooseImage(sampler, p, _dz);
+		return texture2D(sampler, point).b;
+	}
+	else{
+		_dz = (dz - 3.0/4.0) * 4.0;
+		point = chooseImage(sampler, p, _dz);
+		return texture2D(sampler, point).a;
+	}
 }
 
 
 float getVoxel(vec3 p){
-	if(p.z < 1.0/9.0){
-		float dz = (p.z - 0.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d0, p, dz);
+	if(p.z < 1.0/7.0){
+		float dz = (p.z - 0.0/7.0) * 7.0;
+		return  getVoxelValueFromSampler(sampler2d0, p.xy, dz);
 	}
-	if(p.z < 2.0/9.0){
-		float dz = (p.z - 1.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d1, p, dz);
+	if(p.z < 2.0/7.0){
+		float dz = (p.z - 1.0/7.0) * 7.0;
+		return getVoxelValueFromSampler(sampler2d1, p.xy, dz);
 	}
-	if(p.z < 3.0/9.0){
-		float dz = (p.z - 2.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d2, p, dz);
+	if(p.z < 3.0/7.0){
+		float dz = (p.z - 2.0/7.0) * 7.0;
+		return getVoxelValueFromSampler(sampler2d2, p.xy, dz);
 	}
-	if(p.z < 4.0/9.0){
-		float dz = (p.z - 3.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d3, p, dz);
+	if(p.z < 4.0/7.0){
+		float dz = (p.z - 3.0/7.0) * 7.0;
+		return getVoxelValueFromSampler(sampler2d3, p.xy, dz);
 	}
-	if(p.z < 5.0/9.0){
-		float dz = (p.z - 4.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d4, p, dz);
+	if(p.z < 5.0/7.0){
+		float dz = (p.z - 4.0/7.0) * 7.0;
+		return getVoxelValueFromSampler(sampler2d4, p.xy, dz);
 	}
-	if(p.z < 6.0/9.0){
-		float dz = (p.z - 5.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d5, p, dz);
-	}
-	if(p.z < 7.0/9.0){
-		float dz = (p.z - 6.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d6, p, dz);
-	}
-	if(p.z < 8.0/9.0){
-		float dz = (p.z - 7.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d7, p, dz);
+	if(p.z < 6.0/7.0){
+		float dz = (p.z - 5.0/7.0) * 7.0;
+		return getVoxelValueFromSampler(sampler2d5, p.xy, dz);
 	}
 	else{
-		float dz = (p.z - 8.0/9.0) * 9.0;
-		return getVoxelValueFromSampler(sampler2d8, p, dz);
+		float dz = (p.z - 6.0/7.0) * 7.0;
+		return getVoxelValueFromSampler(sampler2d6, p.xy, dz);
 	}
 }
 
 bool cerebro(float value)
 {
-  float min = 83.0/256.0;
-  float max = 85.0/256.0;
-  float v = (value-min)/(max-min);
-  if (value>min && value<=max)
-   return true;
-  return false;
-}
-
-bool carne(float value){
-	float min = 65.0/256.0;
-  float max = 81.0/256.0;
-  float v = (value-min)/(max-min);
-  if (value>min && value<=max)
-   return true;
-  return false;
-}
-
-bool osso(float value)
-{
-  float min = 100.0/256.0;
-  float max = 240.0/256.0;
+  float min = 82.5/256.0;
+  float max = 87./256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;
@@ -140,23 +165,15 @@ float transferenceAlpha(float value, vec3 p)
 //		return 0.0;
 //	if(corteObliquo(-0.16,0.09,0.14,-0.05, p, 1))
 //		return 0.0;
-	if(carne(value))
-		return 0.005;
   if (cerebro(value))
-   return 0.025;
-	if (osso(value))
-		return 0.013;
+   return 0.019;
   return 0.0;
 }
 
 vec3 transferenceColor(float value)
 {
-	if(carne(value))
-		return vec3(1.0,0.0,0.0);
 	if (cerebro(value))
    return vec3(1.0,1.0,0.0);
-	if (osso(value))
-		return vec3(1.0,1.0,1.0);
   return vec3(1.0,1.0,1.0);
 }
 
@@ -170,7 +187,6 @@ void main (void)
 	vec3 cor = vec3(0.0);
   while (p.z <= 1.0 && p.x >= 0.0 && p.x <= 1.0 && p.y>=0.0 && p.y<=1.0)
   {
-		
 		cor += transferenceColor(getVoxel(p))*transferenceAlpha(getVoxel(p), p)*(1-opacidade);
 		opacidade += transferenceAlpha(getVoxel(p), p)*(1-opacidade);	
 			
