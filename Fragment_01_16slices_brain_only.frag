@@ -151,7 +151,7 @@ float getVoxel(vec3 p){
 bool cerebro(float value)
 {
   float min = 82.5/256.0;
-  float max = 87./256.0;
+  float max = 86./256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;

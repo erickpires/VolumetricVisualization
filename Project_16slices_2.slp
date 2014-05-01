@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ShaderLab>
+	<shaders>
+		<vertex>Vertex_00.vert</vertex>
+		<fragment>Fragment_01_16slices_brain_only_2.frag</fragment>
+	</shaders>
+	<model>
+		<id>4</id>
+	</model>
+	<textures>
+		<filename>mrbrain-8bit/image-001.png</filename>
+		<filename>mrbrain-8bit/image-2.png</filename>
+		<filename>mrbrain-8bit/image-3.png</filename>
+		<filename>mrbrain-8bit/image-4.png</filename>
+		<filename>mrbrain-8bit/image-5.png</filename>
+		<filename>mrbrain-8bit/image-6.png</filename>
+		<filename>mrbrain-8bit/image-7.png</filename>
+	</textures>
+</ShaderLab>

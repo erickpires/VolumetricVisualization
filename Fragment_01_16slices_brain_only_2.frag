@@ -150,27 +150,8 @@ float getVoxel(vec3 p){
 
 bool cerebro(float value)
 {
-  float min = 82.5/256.0;
-  float max = 87./256.0;
-  float v = (value-min)/(max-min);
-  if (value>min && value<=max)
-   return true;
-  return false;
-}
-
-bool carne(float value){
-	float min = 65.0/256.0;
-  float max = 81.0/256.0;
-  float v = (value-min)/(max-min);
-  if (value>min && value<=max)
-   return true;
-  return false;
-}
-
-bool osso(float value)
-{
-  float min = 100.0/256.0;
-  float max = 240.0/256.0;
+  float min = 65.5/256.0;
+  float max = 80./256.0;
   float v = (value-min)/(max-min);
   if (value>min && value<=max)
    return true;
@@ -182,25 +163,17 @@ float transferenceAlpha(float value, vec3 p)
 
 //	if(cortePerpendicular(1, 0.2, 0.4, p) || cortePerpendicular(3, 0.0, 0.4, p) || cortePerpendicular(2, 0.3, 1.0, p))
 //		return 0.0;
-//	if(corteObliquo(-0.16,0.09,0.14,-0.05, p, 1) || corteObliquo(-0.16,0.09,0.14,-0.07, p, 0))
+//	if(corteObliquo(-0.16,0.09,0.14,-0.05, p, 1))
 //		return 0.0;
-	if(carne(value))
-		return 0.005;
   if (cerebro(value))
    return 0.019;
-	if (osso(value))
-		return 0.013;
   return 0.0;
 }
 
 vec3 transferenceColor(float value)
 {
-	if(carne(value))
-		return vec3(1.0,0.0,0.0);
 	if (cerebro(value))
-   return vec3(1.0,1.0,0.0);
-	if (osso(value))
-		return vec3(1.0,1.0,1.0);
+   return vec3(0.8);
   return vec3(1.0,1.0,1.0);
 }
 
