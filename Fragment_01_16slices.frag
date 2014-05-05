@@ -182,7 +182,7 @@ float transferenceAlpha(float value, vec3 p)
 
 //	if(cortePerpendicular(1, 0.2, 0.4, p) || cortePerpendicular(3, 0.0, 0.4, p) || cortePerpendicular(2, 0.3, 1.0, p))
 //		return 0.0;
-//	if(corteObliquo(-0.16,0.09,0.14,-0.05, p, 1) || corteObliquo(-0.16,0.09,0.14,-0.07, p, 0))
+//	if(corteObliquo(-0.16,0.09,0.14,-0.05, p, 1) /*|| corteObliquo(-0.16,0.09,0.14,-0.07, p, 0)*/)
 //		return 0.0;
 	if(carne(value))
 		return 0.005;
